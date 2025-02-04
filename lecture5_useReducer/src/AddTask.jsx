@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useTasksDispatch } from "./TasksContext";
 
-function AddTask({ onAddTask }) {
+function AddTask() {
     const [todo, setTodo] = useState("");
+    const dispatch = useTasksDispatch()
 
     return (
         <div>
@@ -13,9 +15,18 @@ function AddTask({ onAddTask }) {
                     setTodo(e.target.value);
                 }}
             />
-            <button onClick={ () => onAddTask(todo) }>Add</button>
+            <button onClick={ () => {
+                setTodo('')
+                dispatch({
+                    type: 'added',
+                    id: nextId++,
+                    text: todo,
+                })
+            }}>Add</button>
         </div>
     );
 }
+
+let nextId = 3;
 
 export default AddTask;

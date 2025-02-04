@@ -1,18 +1,30 @@
 import { useState } from "react";
+import { useTasks, useTasksDispatch } from "./TasksContext";
 
-function TaskList({ tasks, onChangeTask, onDeleteTask }) {
+function TaskList() {
     const [editId, setEditId] = useState(null);
     const [newText, setNewText] = useState("");
+
+    const tasks = useTasks()
+    const dispatch = useTasksDispatch()
 
     return (
         <div>
             {tasks.map((task) => (
-                <div key={Math.random()}>
+                <div key={task.id}>
                     <input
                         type="checkbox"
                         name="checkTask"
                         checked={task.done}
-                        onChange={() => onChangeTask({ ...task, done: !task.done })}
+                        onChange={(e) => {
+                            dispatch({
+                                type: "changed",
+                                task: {
+                                    ...task,
+                                    done: e.target.checked,
+                                },
+                            });
+                        }}
                     />
 
                     {editId === task.id ? (
@@ -25,8 +37,14 @@ function TaskList({ tasks, onChangeTask, onDeleteTask }) {
                             />
                             <button
                                 onClick={() => {
-                                    onChangeTask({ ...task, text: newText });
-                                    setEditId(null); // 수정 완료 후 초기화
+                                    dispatch({
+                                        type: "changed",
+                                        task: {
+                                            ...task,
+                                            text: newText,
+                                        },
+                                    });
+                                    setEditId(null)
                                 }}
                             >
                                 Save
@@ -46,7 +64,14 @@ function TaskList({ tasks, onChangeTask, onDeleteTask }) {
                         </>
                     )}
 
-                    <button onClick={() => onDeleteTask(task.id)}>
+                    <button
+                        onClick={() => {
+                            dispatch({
+                                type: "deleted",
+                                id: task.id,
+                            });
+                        }}
+                    >
                         Delete
                     </button>
                 </div>
