@@ -6,8 +6,10 @@ const initialTasks = [
     { id: 2, text: "Lennon Wall pic", done: false },
 ];
 
+// createSlice로 리듀서와 Action Creator 한 번에 관리
 const tasksSlice = createSlice({
     name: "tasks",
+
     initialState: initialTasks,
     reducers: {
         added: (tasks, action) => {
